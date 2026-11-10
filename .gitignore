@@ -1,0 +1,13 @@
+.cache/
+.env.local
+node_modules
+# What a recording leaves next to its storyboard
+work/
+frames/
+review/
+*.mp4
+captions.vtt
+chapters.md
+chapters.vtt
+poster.jpg
+summary.json

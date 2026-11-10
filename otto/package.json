@@ -1,0 +1,13 @@
+{
+  "name": "otto",
+  "version": "0.1.0",
+  "description": "Narrated, human-paced demo videos of implemented stories, made by a coding agent.",
+  "license": "MIT",
+  "author": "Wonna Oy",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 'tests/*.test.ts' 'scripts/lib/*.test.ts'"
+  }
+}
