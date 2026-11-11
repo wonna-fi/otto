@@ -23,6 +23,11 @@ export type Story = {
   /** One line shown on the title card, e.g. "Test data: Maija Meikäläinen (customer 1001)". */
   testData?: Localized;
   app?: string;
+  /**
+   * Your own words for the cards and chapter banners, over the defaults in LABELS. A guide, for one, has steps rather
+   * than acceptance criteria: `{ criterion: 'Step', verified: 'Covered', changes: 'You need' }`.
+   */
+  labels?: Partial<Record<LabelKey, Localized>>;
 };
 
 export type StoryboardDef = {
@@ -46,7 +51,9 @@ export function storyboard(def: StoryboardDef): StoryboardDef {
   return def;
 }
 
-export const LABELS: Record<Lang, Record<string, string>> = {
+export type LabelKey = 'changes' | 'criterion' | 'of' | 'verified' | 'outroKicker' | 'previously';
+
+export const LABELS: Record<Lang, Record<LabelKey | 'branch' | 'recorded', string>> = {
   en: {
     changes: 'What changed',
     criterion: 'Acceptance criterion',
@@ -90,6 +97,20 @@ export function pickRaw(text: Localized | undefined, lang: Lang): string {
 /** The text for a language as shown on screen (markup resolved to its written form). */
 export function pick(text: Localized | undefined, lang: Lang): string {
   return written(pickRaw(text, lang));
+}
+
+/** The words on the cards and banners for a story: its own `labels` where it has them, the defaults elsewhere. */
+export function labelsFor(story: Story, lang: Lang): Record<LabelKey, string> {
+  const own = Object.fromEntries(Object.entries(story.labels ?? {}).map(([k, v]) => [k, pick(v, lang)]));
+  return { ...LABELS[lang], ...own };
+}
+
+/**
+ * Whether a narration line looks Finnish, for review's check that a video speaks its own language. Against English the
+ * word "on" doesn't count: English uses it as much as Finnish does ("click on", "on the left").
+ */
+export function looksFinnish(text: string, against: Lang): boolean {
+  return (against === 'en' ? /[äö]|\b(ja|kun|että|tämä|nyt)\b/i : /[äö]|\b(ja|on|kun|että|tämä|nyt)\b/i).test(text);
 }
 
 const FI_WORDS = /\b(ja|on|kun|että|tai|ei|se|asiakas|asiakkaan|tulee|näkyy|voi|jos|myös|uusi|kenttä|painike|tilaus)\b/gi;

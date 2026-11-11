@@ -10,7 +10,7 @@ import type { Cut, Timeline, TimelineEvent } from './timeline.ts';
 import { checkFilled, deleteSelection, FastDriver, KEYS, optionIndex, pressKey, selectField, setSelect, type UI, type WaitOpts } from './fast-driver.ts';
 import { readingMs, type Pace } from './pacing.ts';
 import { Tts, type Lang } from './tts.ts';
-import { LABELS, pick, pickRaw, spoken as spokenForm, written, type Localized, type Story } from './storyboard.ts';
+import { labelsFor, pick, pickRaw, spoken as spokenForm, written, type Localized, type Story } from './storyboard.ts';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, Math.max(0, ms)));
 /** How long a slip takes to appear (its fade-in in overlay.js); it can't be read before that. */
@@ -633,7 +633,7 @@ export class Demo implements UI {
     const ac = this.c.story.acceptance.find((a) => a.id === id);
     const rawTitle = title != null ? pickRaw(title, this.c.lang) : ac ? pickRaw(ac.text, this.c.lang) : id;
     const text = written(rawTitle);
-    const L = LABELS[this.c.lang];
+    const L = labelsFor(this.c.story, this.c.lang);
     const idx = this.c.story.acceptance.findIndex((a) => a.id === id);
     const FI_NUM = ['nolla', 'yksi', 'kaksi', 'kolme', 'neljä', 'viisi', 'kuusi', 'seitsemän', 'kahdeksan', 'yhdeksän', 'kymmenen'];
     const nth = this.c.lang === 'fi' && FI_NUM[idx + 1] ? `{${idx + 1}|${FI_NUM[idx + 1]}}` : String(idx + 1);
@@ -701,7 +701,7 @@ export class Demo implements UI {
       const text = pick(opts.text, this.c.lang);
       const info = await this.s.overlay<Record<string, unknown>>('annotate', {
         id, selector, badge: opts.badge, tone: opts.tone ?? 'new', title, text,
-        previously: pick(opts.previously, this.c.lang), previouslyLabel: LABELS[this.c.lang].previously,
+        previously: pick(opts.previously, this.c.lang), previouslyLabel: labelsFor(this.c.story, this.c.lang).previously,
         placement: opts.placement ?? 'auto', spotlight: !!opts.spotlight, number: opts.number,
       });
       if (!info?.ok) throw new Error(String(info?.error ?? 'annotation failed'));
@@ -787,7 +787,7 @@ export class Demo implements UI {
   async titleCard(opts: { say?: Localized } = {}) {
     return this.step('title card', async () => {
       const st = this.c.story;
-      const L = LABELS[this.c.lang];
+      const L = labelsFor(this.c.story, this.c.lang);
       const sayLine = opts.say ?? `${st.key}: ${pickRaw(st.title, this.c.lang)}.`;
       if (this.dry) { await this.say(sayLine); return; }
       await this.s.overlay('cursorShow', false);
@@ -815,7 +815,7 @@ export class Demo implements UI {
   async outroCard(opts: { say?: Localized } = {}) {
     return this.step('outro card', async () => {
       const st = this.c.story;
-      const L = LABELS[this.c.lang];
+      const L = labelsFor(this.c.story, this.c.lang);
       if (this.dry) { if (opts.say) await this.say(opts.say); return; }
       await this.waitSpeech();
       await this.clear();

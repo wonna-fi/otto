@@ -12,6 +12,7 @@ import { fmtTime, mapTime, type Timeline, type TimelineEvent } from './lib/timel
 import { PACES, readingMs } from './lib/pacing.ts';
 import { SLIP_IN_MS } from './lib/demo.ts';
 import { checkHeard } from './lib/heard.ts';
+import { looksFinnish } from './lib/storyboard.ts';
 
 type Finding = { level: 'error' | 'warn'; at?: number; msg: string };
 const FONT = ['/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'].find(existsSync);
@@ -70,7 +71,7 @@ export async function review(dir: string, opts: { log?: (s: string) => void } = 
     const unchecked = narr.filter((n) => n.wav && n.heardOk && n.heard && checkHeard(n.spoken ?? n.text, n.heard, 'fi').caseUnchecked.length);
     if (unchecked.length) add('warn', `The case of a number couldn't be checked in ${unchecked.length} line(s), because the transcriber wrote digits. Listen to: ${unchecked.map((n) => `"${n.text.slice(0, 45)}"`).join(', ')}`, unchecked[0].s);
   }
-  const fiLike = narr.filter((n) => /[äö]|\b(ja|on|kun|että|tämä|nyt)\b/i.test(n.text)).length;
+  const fiLike = narr.filter((n) => looksFinnish(n.text, tl.meta.lang)).length;
   if (narr.length && tl.meta.lang === 'en' && fiLike / narr.length > 0.4) add('error', 'Narration looks Finnish but the video language is en');
   if (narr.length && tl.meta.lang === 'fi' && fiLike / narr.length < 0.4) add('error', 'Narration does not look Finnish but the video language is fi');
   if (!narr.some((n) => n.wav)) add('warn', 'Video has no narration audio (TTS provider none?)');

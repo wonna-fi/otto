@@ -13,6 +13,7 @@ A storyboard default-exports `storyboard({...})` from `scripts/lib/storyboard.ts
 | `story.changedUi` | Selectors of changed elements. Review errors if one is never annotated. An annotation counts when its element is that element, contains it or is inside it. |
 | `story.testData` | One line on the title card. |
 | `story.app` | App name shown in the card footer. |
+| `story.labels` | Your own words for the cards and banners, over the defaults: `criterion`, `of`, `verified`, `outroKicker`, `changes`, `previously`. A guide with steps instead of acceptance criteria: `{ criterion: 'Step', verified: 'Covered', changes: 'You need' }`, with `type: ''` to hide the type. Texts can be per language. |
 | `repo` | App repo, relative to the storyboard. Branch and commit go on the cards. |
 | `baseUrl` | App URL. Relative URLs in `goto()` resolve against it. |
 | `lang` | Force `'fi'` / `'en'` (same as `--lang`). |
