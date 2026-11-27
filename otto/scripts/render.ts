@@ -101,12 +101,12 @@ export async function render(dir: string, opts: { log?: (s: string) => void; crf
 
   // Video: keep the segments outside cuts, re-time to a continuous stream.
   const sel = keep.map((k) => `between(t,${(k.start / 1000).toFixed(3)},${(k.end / 1000 - 0.5 / fps).toFixed(3)})`).join('+');
-  writeFileSync(join(work, 'video-filter.txt'), `select='${sel}',setpts=N/FRAME_RATE/TB`);
   const video = join(dir, 'video.mp4');
   log(`render: ${keep.length} segments, ${(outMs / 1000).toFixed(1)}s, ${tl.narration.length} narration clips`);
   ffmpeg([
     '-i', capture, '-i', join(work, 'narration.wav'), '-i', join(work, 'chapters.ffmeta'),
-    '-filter_script:v', join(work, 'video-filter.txt'),
+    // Inline, since ffmpeg 9 removed -filter_script
+    '-filter:v', `select='${sel}',setpts=N/FRAME_RATE/TB`,
     '-af', `loudnorm=I=-16:TP=-1.5:LRA=11,apad,atrim=0:${(outMs / 1000).toFixed(3)}`,
     '-map', '0:v', '-map', '1:a', '-map_metadata', '2', '-map_chapters', '2',
     '-c:v', 'libx264', '-preset', 'slow', '-crf', String(opts.crf ?? 22), '-pix_fmt', 'yuv420p', '-r', String(fps),

@@ -6,6 +6,7 @@ The agent writes a short storyboard, checks it with a fast dry run, and records 
 
 It's a **skill for coding agents** plus a small toolkit. Plain Node and ffmpeg, no npm install.
 
+> [!WARNING]
 > **Status: alpha.** So far it has been used on small demo apps, not yet on a production app. See [Limitations](#limitations).
 
 ## What makes it different
@@ -94,4 +95,4 @@ They start their own headless Chrome and need no API keys.
 
 ## License
 
-MIT, see [LICENSE](LICENSE). The bundled Archivo SemiCondensed font is under the SIL Open Font License ([OFL.txt](otto/scripts/lib/fonts/OFL.txt)).
+MIT, see [LICENSE](LICENSE). The bundled Archivo SemiCondensed font is under the SIL Open Font License ([OFL.txt](OFL.txt)).
