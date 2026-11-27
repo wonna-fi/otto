@@ -94,4 +94,4 @@ They start their own headless Chrome and need no API keys.
 
 ## License
 
-MIT, see [LICENSE](LICENSE). The bundled Archivo SemiCondensed font is under the SIL Open Font License ([OFL.txt](otto/scripts/lib/fonts/OFL.txt)).
+MIT, see [LICENSE](LICENSE). The bundled Archivo SemiCondensed font is under the SIL Open Font License ([OFL.txt](OFL.txt)).
